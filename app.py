@@ -1,7 +1,6 @@
 import os
 import openai
 from tempfile import NamedTemporaryFile
-
 import streamlit as st
 from pytube import YouTube
 
@@ -20,7 +19,12 @@ video_file = None
 def download_youtube_audio(youtube_url):
     try:
         yt = YouTube(youtube_url)
-        stream = yt.streams.filter(only_audio=True).first()
+        stream = yt.streams.filter(only_audio=True, file_extension='mp4').first()
+
+        if not stream:
+            raise Exception("No audio stream found for this video.")
+
+        # Download the video to a buffer
         buffer = NamedTemporaryFile(delete=False, suffix=".mp4")
         stream.stream_to_buffer(buffer)
         buffer.seek(0)
@@ -39,7 +43,6 @@ def transcribe_audio_openai(video_bytes):
     os.remove(temp_audio_path)
     return transcript['text']
 
-# Handle video upload or YouTube URL input
 if source == "Upload MP4":
     video_file = st.file_uploader("Upload a video file (MP4 only)", type=["mp4"])
     if video_file:
@@ -55,7 +58,7 @@ elif source == "YouTube Link":
                 st.success(f"Downloaded: {yt_title}")
                 st.audio(video_bytes)
 
-# Proceed with transcription if video bytes are available
+# Transcription and processing
 if video_bytes:
     st.info("Transcribing audio with Whisper... This may take a while.")
     try:
