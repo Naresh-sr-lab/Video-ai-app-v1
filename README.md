@@ -1,15 +1,21 @@
-# Interactive AI Video Assistant
+# 🎥 Interactive AI Video Assistant
 
-This is an interactive video assistant that allows you to upload a video or provide a YouTube link. The app will transcribe the video's audio and provide a summary using OpenAI's Whisper API and GPT-4.
+This app allows you to:
+- Upload MP4 videos or paste YouTube links
+- Transcribe audio using OpenAI Whisper
+- Get a GPT-based summary
+- Ask questions about the video content
 
-## Features
+## 💡 How to Use
 
-- **Video Upload**: Upload an MP4 file to get the transcription and summary.
-- **YouTube Link**: Provide a YouTube video URL, and the app will download and transcribe the video.
-- **Transcription**: The app uses OpenAI Whisper to transcribe the video's audio.
-- **Summary**: The app generates a summary of the video using OpenAI GPT-4.
-- **Q&A**: Ask questions about the video, and the app will answer based on the transcript.
+1. Fork this repo and deploy on [Streamlit Cloud](https://streamlit.io/cloud)
+2. Add your OpenAI API key in your environment settings as `OPENAI_API_KEY`
+3. Upload a video or paste a YouTube link
+4. Let the app transcribe, summarize, and interact!
 
-## Setup Instructions
+## 🧪 Requirements
 
-1. Clone the repository:
+See `requirements.txt`. The key libraries:
+- `streamlit`
+- `openai`
+- `pytube`
