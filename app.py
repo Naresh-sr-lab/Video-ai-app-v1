@@ -2,7 +2,7 @@ import os
 import openai
 from tempfile import NamedTemporaryFile
 import streamlit as st
-from pytube import YouTube  # Import pytube for YouTube video download
+from pytube import YouTube, exceptions
 
 # Set OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
@@ -57,18 +57,26 @@ elif video_url:
     try:
         # Download YouTube video
         yt = YouTube(video_url)
+        
+        # Select the best progressive stream with mp4 format
         video_stream = yt.streams.filter(progressive=True, file_extension='mp4').first()
-        video_file_path = video_stream.download(output_path="temp_video.mp4")
 
-        # Transcribe downloaded video
-        with open(video_file_path, "rb") as video_file:
-            transcript = transcribe_audio_openai(video_file.read())
-        st.success("Transcription complete!")
-        st.video(video_file_path)
+        if not video_stream:
+            st.error("No compatible stream found. Please try another video.")
+        else:
+            video_file_path = video_stream.download(output_path="temp_video.mp4")
 
-        # Display transcript
-        st.subheader("📄 Transcript")
-        st.write(transcript)
+            # Transcribe downloaded video
+            with open(video_file_path, "rb") as video_file:
+                transcript = transcribe_audio_openai(video_file.read())
+            st.success("Transcription complete!")
+            st.video(video_file_path)
+
+            # Display transcript
+            st.subheader("📄 Transcript")
+            st.write(transcript)
+    except exceptions.PytubeError as e:
+        st.error(f"Error downloading the video: {e}")
     except Exception as e:
         st.error(f"Error downloading or transcribing YouTube video: {e}")
 else:
