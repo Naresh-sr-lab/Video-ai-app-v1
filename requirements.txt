@@ -1,3 +1,4 @@
 streamlit
 openai
-pytube
+pytube==12.1.0  # Latest stable version
+
